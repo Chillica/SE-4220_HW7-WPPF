@@ -8,10 +8,11 @@ using System.Runtime.CompilerServices;
 
 namespace SE_4220_HW7_WPF.ViewModel
 {
-    class MainViewModel
+    public class MainViewModel : INotifyPropertyChanged
     {
         public BindingList<Character> Characters { get; set; }
-        public CmdsViewModel cmdsVM;
+        public List<string> CharacterTraits { get; set; }
+        public CmdViewModel cmdsVM;
 
         public MainViewModel()
         {
@@ -27,11 +28,24 @@ namespace SE_4220_HW7_WPF.ViewModel
                 new Character{FirstName="Jack",LastName="Bob", Born=date3, Height="323.45", Weight="400kgs"},
                 new Character{FirstName="Jill",LastName="Bob", Born=date4, Height="423.45", Weight="138lbs"},
             }.ToList());
-            cmdsVM = new CmdsViewModel();
+
+            CharacterTraits = new List<string>(new[]{
+                "Basic Overview",
+                "Physical Characteristics",
+                "Intellectual, Mental, Personality Attitudes",
+                "Emotional",
+                "Spiritual"
+            });
+
+
+            cmdsVM = new CmdViewModel();
         }
-        public CmdsViewModel CmdsVm
+
+        public string SelectedTrait { get; set; }
+        public List<string> TraitList
         {
-            get { return cmdsVM; }
+            get { return CharacterTraits; }
+            //set { SetField(ref SelectedTrait, value); }
         }
 
         private Character selectedCharacter;
@@ -39,6 +53,11 @@ namespace SE_4220_HW7_WPF.ViewModel
         {
             get { return selectedCharacter; }
             set { SetField(ref selectedCharacter, value); }
+        }
+
+        public CmdViewModel CmdsVm
+        {
+            get { return cmdsVM; }
         }
 
         #region INotifyPropertyChanged Implementation

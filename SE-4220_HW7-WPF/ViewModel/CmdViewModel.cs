@@ -5,15 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Controls;
 
 namespace SE_4220_HW7_WPF.ViewModel
 {
-    class CmdsViewModel
+    public class CmdViewModel : INotifyPropertyChanged
     {
 
         private readonly DelegateCommand<string> _clickCharViewListCommand;
+        private readonly DelegateCommand<string> _exitCommand;
 
-        public CmdsViewModel()
+        public CmdViewModel()
         {
 
             _clickCharViewListCommand = new DelegateCommand<string>(
@@ -26,6 +28,13 @@ namespace SE_4220_HW7_WPF.ViewModel
                 }, //Execute
                 (s) => { return !string.IsNullOrEmpty(_input); } //CanExecute
            );
+            _exitCommand = new DelegateCommand<string>(
+               (s) =>
+               { /* perform some action */
+                   System.Windows.Application.Current.Shutdown();
+               }, //Execute
+               (s) => { return !string.IsNullOrEmpty(_input); } //CanExecute
+          );
             IsCharListOpen = true;
         }
 
@@ -44,6 +53,11 @@ namespace SE_4220_HW7_WPF.ViewModel
         public DelegateCommand<string> CharViewListCommand
         {
             get { return _clickCharViewListCommand; }
+        }
+
+        public DelegateCommand<string> ExitCommand
+        {
+            get { return _exitCommand; }
         }
 
         private string _input = "can execute";

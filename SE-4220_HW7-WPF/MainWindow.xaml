@@ -11,25 +11,59 @@
         <vm:MainViewModel />
     </Window.DataContext>
     <Window.Resources>
+        <ControlTemplate x:Key="ValidationTemplate">
+            <DockPanel>
+                <TextBlock Foreground="Red" FontSize="20">!</TextBlock>
+                <AdornedElementPlaceholder/>
+            </DockPanel>
+        </ControlTemplate>
+        <Style x:Key="TextBoxInError" TargetType="TextBox">
+            <Setter Property="Margin"
+                Value="5" />
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError"
+                     Value="true">
+                    <Setter Property="ToolTip"
+                        Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors).CurrentItem.ErrorContent}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         <Style BasedOn="{StaticResource {x:Type ListBox}}"
                TargetType="ListBox">
             <Setter Property="Background" Value="Transparent" />
-            <Setter Property="Foreground" Value="#517DAE" />
+            <Setter Property="Foreground" Value="#FAC18C" />
             <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
+        <Style BasedOn="{StaticResource {x:Type TextBlock}}"
+               TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#FFFFFF" />
+        </Style>
+        <DataTemplate x:Key="traitTemplate">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding}" />
+            </StackPanel>
+        </DataTemplate>
         <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
     </Window.Resources>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="File">
-                <MenuItem Header="New Character" />
-                <MenuItem Header="Edit Character" />
+            <Menu.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#28ABE3" Offset="0.0" />
+                    <GradientStop Color="#517DAE" Offset="0.25" />
+                    <GradientStop Color="#183C5E" Offset="1.0" />
+                </LinearGradientBrush>
+            </Menu.Background>
+            <MenuItem Header="File" Foreground="#ffffff">
+                <MenuItem Header="Add Character" Foreground="#000000" />
+                <MenuItem Header="Edit Character" Foreground="#000000" />
                 <Separator />
-                <MenuItem Header="Exit" />
+                <MenuItem Header="Exit" Foreground="#000000" Command="{Binding CmdsVm.ExitCommand}"/>
             </MenuItem>
-            <MenuItem Header="View">
+            <MenuItem Header="View" Foreground="#ffffff">
                 <MenuItem Header="Character List"
+                          Foreground="#000000"
                           Command="{Binding CmdsVm.CharViewListCommand}"/>
             </MenuItem>
         </Menu>
@@ -39,63 +73,103 @@
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
             <Border Grid.Column="0"
-                    BorderBrush="Blue"
+                    Background="#173C5E"
+                    BorderBrush="#183C5E"
                     BorderThickness="0 0 1 0"
                     Visibility="{Binding CmdsVm.IsCharListOpen, Converter={StaticResource booleanToVisibilityConverter}}">
-                <StackPanel CanVerticallyScroll="True">
-                    <TextBlock Margin="5,5,5,0" FontSize="18">Characters:</TextBlock>
-                    <ListBox ItemsSource="{Binding Characters}"
-                             SelectedItem="{Binding SelectedCharacter}"
-                             DisplayMemberPath="Name"
-                             SelectedIndex="0"
-                             Margin="5">
-                    </ListBox>
-                </StackPanel>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    
+                    <TextBlock Margin="5,5,5,0" FontSize="18" Foreground="#ffffff">Characters:</TextBlock>
+                    <StackPanel Grid.Row="1" DockPanel.Dock="Top" CanVerticallyScroll="True">
+                        <ListBox ItemsSource="{Binding Characters}"
+                                 SelectedItem="{Binding SelectedCharacter}"
+                                 DisplayMemberPath="Name"
+                                 SelectedIndex="0"
+                                 Margin="5">
+                        </ListBox>
+                    </StackPanel>
+                    <Button Grid.Row="2" Content="Add Character" MaxHeight="20"></Button>
+                </Grid>
             </Border>
-            <Grid Grid.Column="1" 
-                  DataContext="{Binding SelectedCharacter}"
-                  Margin="15">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"
-                                  MinWidth="75" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="{Binding Name}" Grid.ColumnSpan="2" FontSize="18" Margin="5" TextAlignment="Center" />
-                <TextBlock Grid.Row="2"
-                       Text="First Name" />
-                <TextBlock Grid.Row="2"
-                     Grid.Column="3"
-                     Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged, FallbackValue='Select a person on the left...'}" />
-                <TextBlock Grid.Row="3"
-                       Text="Last Name" />
-                <TextBlock Grid.Row="3"
-                     Grid.Column="1"
-                     Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged, FallbackValue='Select a person on the left...'}" />
-                <TextBlock Grid.Row="4"
-                       Text="Born" />
-                <TextBlock Grid.Row="4"
-                     Grid.Column="1"
-                     Text="{Binding Born, StringFormat=D, UpdateSourceTrigger=PropertyChanged, FallbackValue='Select a person on the left...'}" />
-                <TextBlock Grid.Row="5"
-                       Text="Weight" />
-                <TextBlock Grid.Row="5"
-                     Grid.Column="1"
-                     Text="{Binding Weight, UpdateSourceTrigger=PropertyChanged, FallbackValue='Select a person on the left...'}" />
-                <TextBlock Grid.Row="6"
-                       Text="Height" />
-                <TextBlock Grid.Row="6"
-                     Grid.Column="1"
-                     Text="{Binding Height, UpdateSourceTrigger=PropertyChanged, FallbackValue='Select a person on the left...'}" />
-            </Grid>
+            <Border Grid.Column="1" 
+                    Padding="15"
+                    Background="#517DAE">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" MinWidth="100" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding SelectedCharacter.Name, FallbackValue='Person Name'}" 
+                               Grid.ColumnSpan="2" 
+                               FontSize="18" 
+                               Margin="5"
+                               TextAlignment="Center" />
+
+                    <TextBlock Grid.Row="1" FontSize="16" Padding="0, 5, 5, 5">Traits:</TextBlock>
+                    <ComboBox ItemsSource="{Binding TraitList}"
+                              SelectedItem="{Binding SelectedTrait}"
+                              ItemTemplate="{StaticResource traitTemplate}"
+                              SelectedIndex="0"
+                              Grid.Row="1"
+                              Grid.Column="1"
+                              VerticalAlignment="Center">
+
+                    </ComboBox>
+                    <Grid Grid.Row="2" Grid.ColumnSpan="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" MinWidth="100" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Row="0"
+                               Text="First Name:" />
+                        <TextBox Grid.Row="0"
+                                 Grid.Column="1"
+                                 Text="{Binding SelectedCharacter.FirstName, 
+                                 UpdateSourceTrigger=PropertyChanged, FallbackValue='Select a person on the left...', ValidatesOnExceptions=True, ValidatesOnDataErrors=True}"
+                                 Style="{StaticResource TextBoxInError}"/>
+                        <TextBlock Grid.Row="1"
+                               Text="Last Name:" />
+                        <TextBox Grid.Row="1"
+                                 Grid.Column="1"
+                                 Text="{Binding SelectedCharacter.LastName, UpdateSourceTrigger=PropertyChanged, FallbackValue='Select a person on the left...', ValidatesOnExceptions=True, ValidatesOnDataErrors=True}"
+                                 Style="{StaticResource TextBoxInError}"/>
+                        <TextBlock Grid.Row="2"
+                               Text="Born:" />
+                        <TextBlock Grid.Row="2"
+                                 Grid.Column="1"
+                                 Text="{Binding SelectedCharacter.Born, StringFormat=D, FallbackValue='Select a person on the left...'}"/>
+                        <TextBlock Grid.Row="3"
+                               Text="Weight:" />
+                        <TextBox Grid.Row="3"
+                                 Grid.Column="1"
+                                 Text="{Binding SelectedCharacter.Weight, UpdateSourceTrigger=PropertyChanged, FallbackValue='Select a person on the left...', ValidatesOnExceptions=True, ValidatesOnDataErrors=True}"
+                                 Style="{StaticResource TextBoxInError}"/>
+                        <TextBlock Grid.Row="4"
+                               Text="Height:" />
+                        <TextBox Grid.Row="4"
+                                 Grid.Column="1"
+                                 Text="{Binding SelectedCharacter.Height, UpdateSourceTrigger=PropertyChanged, FallbackValue='Select a person on the left...', ValidatesOnExceptions=True, ValidatesOnDataErrors=True}"
+                                 Style="{StaticResource TextBoxInError}"/>
+                    </Grid>
+                </Grid>
+            </Border>
         </Grid>
     </DockPanel>
 </Window>

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SE_4220_HW7_WPF
 {
-    public class Character
+    public class Character : INotifyPropertyChanged, IDataErrorInfo
     {
         private string lastName, firstName, height, weight;
         private DateTime born;
@@ -101,7 +101,10 @@ namespace SE_4220_HW7_WPF
             get { return firstName; }
             set
             {
+                if (value?.Length > 10)
+                    throw new ArgumentOutOfRangeException(nameof(FirstName), value, "Cannot be > 10 characters.");
                 SetField(ref firstName, value);
+                validateFieldsNotEmpty();
                 OnPropertyChanged(nameof(Name));
             }
         }
@@ -111,7 +114,10 @@ namespace SE_4220_HW7_WPF
             get => lastName;
             set
             {
+                if (value?.Length > 10)
+                    throw new ArgumentOutOfRangeException(nameof(FirstName), value, "Cannot be > 10 characters.");
                 SetField(ref lastName, value);
+                validateFieldsNotEmpty();
                 OnPropertyChanged(nameof(Name));
             }
         }
@@ -131,7 +137,10 @@ namespace SE_4220_HW7_WPF
             get { return height; }
             set
             {
+                if (value?.Length > 10)
+                    throw new ArgumentOutOfRangeException(nameof(FirstName), value, "Cannot be > 10 characters.");
                 SetField(ref height, value);
+                validateFieldsNotEmpty();
                 OnPropertyChanged(nameof(Name));
             }
         }
@@ -141,10 +150,45 @@ namespace SE_4220_HW7_WPF
             get { return weight; }
             set
             {
+                if (value?.Length > 10)
+                    throw new ArgumentOutOfRangeException(nameof(FirstName), value, "Cannot be > 10 characters.");
                 SetField(ref weight, value);
                 OnPropertyChanged(nameof(Name));
             }
         }
+        private bool isFieldsEmpty;
+        public bool IsFieldsEmpty
+        {
+            get { return isFieldsEmpty; }
+            set
+            {
+                SetField(ref isFieldsEmpty, value);
+                validateFieldsNotEmpty();
+            }
+        }
+
+        private void validateFieldsNotEmpty()
+        {
+            if (FirstName == null)
+                errors[nameof(IsFieldsEmpty)] = "First name can't be empty";
+            else if (LastName == null)
+                errors[nameof(IsFieldsEmpty)] = "Last name can't be empty";
+            else if (Weight == null)
+                errors[nameof(IsFieldsEmpty)] = "Weight can't be empty";
+            else if (Height == null)
+                errors[nameof(IsFieldsEmpty)] = "Height can't be empty";
+            else
+                errors[nameof(IsFieldsEmpty)] = null;
+
+            OnPropertyChanged(nameof(FirstName));
+            OnPropertyChanged(nameof(LastName));
+            OnPropertyChanged(nameof(Height));
+            OnPropertyChanged(nameof(Weight));
+        }
+
+        public string Error => throw new NotImplementedException();
+        public string this[string columnName] => errors.ContainsKey(columnName) ? errors[columnName] : null;
+        private Dictionary<string, string> errors = new Dictionary<string, string>();
 
         #region INotifyPropertyChanged Implementation
         public event PropertyChangedEventHandler PropertyChanged;
