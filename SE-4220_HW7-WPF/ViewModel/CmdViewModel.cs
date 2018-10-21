@@ -7,7 +7,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 
-namespace SE_4220_HW7_WPF.ViewModel
+namespace HW7.ViewModel
 {
     public class CmdViewModel : INotifyPropertyChanged
     {

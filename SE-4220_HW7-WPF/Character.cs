@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SE_4220_HW7_WPF
+namespace HW7
 {
     public class Character : INotifyPropertyChanged, IDataErrorInfo
     {

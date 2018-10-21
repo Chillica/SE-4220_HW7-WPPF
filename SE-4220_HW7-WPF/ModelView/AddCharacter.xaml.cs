@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace SE_4220_HW7_WPF.ModelView
+namespace HW7.viewModel
 {
     /// <summary>
     /// Interaction logic for AddCharacter.xaml

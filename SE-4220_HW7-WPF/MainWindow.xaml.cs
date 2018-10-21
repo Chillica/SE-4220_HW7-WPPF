@@ -12,8 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using HW7.ViewModel;
 
-namespace SE_4220_HW7_WPF
+namespace HW7
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -23,6 +24,13 @@ namespace SE_4220_HW7_WPF
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        public void SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            var vm = DataContext as MainViewModel;
+            if (vm != null)
+                vm.LocVm.SelectedLocation = e.NewValue as Location;
         }
     }
 }

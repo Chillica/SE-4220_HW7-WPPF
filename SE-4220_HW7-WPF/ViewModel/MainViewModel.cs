@@ -5,14 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Collections.ObjectModel;
+using GalaSoft.MvvmLight.Command;
 
-namespace SE_4220_HW7_WPF.ViewModel
+namespace HW7.ViewModel
 {
     public class MainViewModel : INotifyPropertyChanged
     {
         public BindingList<Character> Characters { get; set; }
         public List<string> CharacterTraits { get; set; }
-        public CmdViewModel cmdsVM;
+        private CmdViewModel cmdsVM;
+        private LocationTreeViewModel locVM;
+        private BookDataGridViewModel bookVM;
 
         public MainViewModel()
         {
@@ -21,8 +25,7 @@ namespace SE_4220_HW7_WPF.ViewModel
             DateTime date3 = new DateTime(1975, 12, 3);
             DateTime date4 = new DateTime(1981, 4, 21);
 
-            Characters = new BindingList<Character>(new[]
-{
+            Characters = new BindingList<Character>(new[]{
                 new Character{FirstName="Jim",LastName="Bob", Born=date1, Height="123.45", Weight="300lbs"},
                 new Character{FirstName="Joe",LastName="Bob", Born=date2, Height="223.45", Weight="178lbs"},
                 new Character{FirstName="Jack",LastName="Bob", Born=date3, Height="323.45", Weight="400kgs"},
@@ -37,8 +40,11 @@ namespace SE_4220_HW7_WPF.ViewModel
                 "Spiritual"
             });
 
+            var locations = new BindingList<Location>(new[] { new Location() { Name = "Mountain", Description = "Filled with trees and hills." } });
 
             cmdsVM = new CmdViewModel();
+            locVM = new LocationTreeViewModel(new ObservableCollection<Location>(locations));
+            bookVM = new BookDataGridViewModel();
         }
 
         public string SelectedTrait { get; set; }
@@ -58,7 +64,26 @@ namespace SE_4220_HW7_WPF.ViewModel
         public CmdViewModel CmdsVm
         {
             get { return cmdsVM; }
+
         }
+        public LocationTreeViewModel LocVm
+        {
+            get { return locVM; }
+        }
+
+        public BookDataGridViewModel BookVm
+        {
+            get { return bookVM; }
+        }
+
+        int childNumber = 1;
+        private RelayCommand addSingleCharacter;
+        public RelayCommand AddSingleCharacter => addSingleCharacter ?? (addSingleCharacter = new RelayCommand(
+            () => Characters.Add(new Character() { FirstName = $"First {childNumber++}", LastName = $"Last {childNumber}" })));
+
+        private RelayCommand removeSelectedCharacter;
+        public RelayCommand RemoveSelectedCharacter => removeSelectedCharacter ?? (removeSelectedCharacter = new RelayCommand(
+            () => Characters.Remove(SelectedCharacter)));
 
         #region INotifyPropertyChanged Implementation
         public event PropertyChangedEventHandler PropertyChanged;

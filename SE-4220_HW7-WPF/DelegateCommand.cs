@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SE_4220_HW7_WPF
+namespace HW7
 {
     public class DelegateCommand<T> : System.Windows.Input.ICommand where T : class
     {

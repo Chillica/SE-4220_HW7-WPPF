@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace SE_4220_HW7_WPF
+namespace HW7
 {
     /// <summary>
     /// Interaction logic for App.xaml
